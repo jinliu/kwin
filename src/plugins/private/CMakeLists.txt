@@ -13,13 +13,17 @@ ecm_target_qml_sources(effectsplugin
 target_sources(effectsplugin PRIVATE
     expoarea.cpp
     expolayout.cpp
+    smartlayout.cpp
     plugin.cpp
 )
+
+kconfig_add_kcfg_files(effectsplugin layoutconfig.kcfgc)
 
 target_link_libraries(effectsplugin PRIVATE
     kwin
     Qt6::Quick
     Qt6::Qml
+    KF6::ConfigGui # for KConfigSkeleton
     KF6::I18n
 )
 

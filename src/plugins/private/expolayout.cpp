@@ -9,6 +9,7 @@
 */
 
 #include "expolayout.h"
+#include "smartlayout.h"
 
 #include <cmath>
 
@@ -291,6 +292,9 @@ void ExpoLayout::updatePolish()
             break;
         case LayoutNatural:
             calculateWindowTransformationsNatural();
+            break;
+        case LayoutSmart:
+            calculateWindowTransformationsSmart();
             break;
         case LayoutNone:
             resetTransformations();
@@ -712,6 +716,62 @@ void ExpoLayout::resetTransformations()
         cell->setY(cell->naturalY());
         cell->setWidth(cell->naturalWidth());
         cell->setHeight(cell->naturalHeight());
+    }
+}
+
+// Move and scale rect to fit inside area
+static void moveToFit(QRectF &rect, const QRectF &area)
+{
+    qreal scale = std::min(area.width() / rect.width(), area.height() / rect.height());
+    rect.setWidth(rect.width() * scale);
+    rect.setHeight(rect.height() * scale);
+    rect.moveCenter(area.center());
+}
+
+void ExpoLayout::calculateWindowTransformationsSmart()
+{
+    if (m_cells.isEmpty()) {
+        return;
+    }
+
+    QRectF area = QRectF(0, 0, width(), height());
+
+    std::sort(m_cells.begin(), m_cells.end(),
+              [](const ExpoCell *a, const ExpoCell *b) {
+                  return a->persistentKey() < b->persistentKey();
+              });
+
+    // Estimate the scale factor we need to apply by simple heuristics
+    qreal totalArea = 0;
+    qreal availableArea = area.width() * area.height();
+    for (ExpoCell *cell : std::as_const(m_cells)) {
+        totalArea += cell->naturalWidth() * cell->naturalHeight();
+    }
+    qreal scale = std::sqrt(availableArea / totalArea) * 0.7; // conservative estimate
+    scale = std::clamp(scale, 0.1, 10.0); // don't go crazy
+
+    std::vector<QRectF> windowSizes, windowLayouts;
+    for (ExpoCell *cell : std::as_const(m_cells)) {
+        const QMargins &margins = cell->margins();
+        const QMarginsF scaledMargins(margins.left() / scale, margins.top() / scale, margins.right() / scale, margins.bottom() / scale);
+        windowSizes.emplace_back(cell->naturalRect().toRectF().marginsAdded(scaledMargins));
+    }
+    LayoutHelper::layout(area, windowSizes, windowLayouts, area.height() > area.width() ? LayoutHelper::Columns : LayoutHelper::Rows);
+    for (size_t i = 0; i < windowLayouts.size(); ++i) {
+        ExpoCell *cell = m_cells[i];
+        QRectF target = windowLayouts[i];
+
+        QRectF adjustedTarget = target.marginsRemoved(cell->margins());
+        if (adjustedTarget.isValid()) {
+            target = adjustedTarget; // Borders
+        }
+
+        QRectF rect = cell->naturalRect();
+        moveToFit(rect, target);
+        cell->setX(rect.x());
+        cell->setY(rect.y());
+        cell->setWidth(rect.width());
+        cell->setHeight(rect.height());
     }
 }
 

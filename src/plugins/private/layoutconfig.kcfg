@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+    <group name="General">
+        <entry name="SearchTolerance" type="Double">
+            <label>Tolerance in binary search</label>
+            <tooltip> 
+                We stop binary search when our two candidate strip widths are within tol (as a fraction of the larger strip width)
+            </tooltip>
+            <default>0.2</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="IdealWidthRatio" type="Double">
+            <label>Ideal width of each row</label>
+            <tooltip>
+                The ideal sum of window widths in a strip (including added margins), as a fraction of the strip width. This *MUST* be strictly less than 1.
+            </tooltip>
+            <default>0.8</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="RelativeMarginLeft" type="Double">
+            <label>Left Margin size</label>
+            <tooltip>
+                Left margin size, as a ratio of the short side of layout area.
+                The margins are added to each window before layout. This is the ratio of the margin size to the short side of the layout area.
+            </tooltip>
+            <default>0.07</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="RelativeMarginRight" type="Double">
+            <label>Right Margin size</label>
+            <tooltip>
+                Right margin size, as a ratio of the short side of layout area.
+                The margins are added to each window before layout. This is the ratio of the margin size to the short side of the layout area.
+            </tooltip>
+            <default>0.07</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="RelativeMarginTop" type="Double">
+            <label>Top Margin size</label>
+            <tooltip>
+                Top margin size, as a ratio of the short side of layout area.
+                The margins are added to each window before layout. This is the ratio of the margin size to the short side of the layout area.
+            </tooltip>
+            <default>0.07</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="RelativeMarginBottom" type="Double">
+            <label>Bottom Margin size</label>
+            <tooltip>
+                Bottom margin size, as a ratio of the short side of layout area.
+                The margins are added to each window before layout. This is the ratio of the margin size to the short side of the layout area.
+            </tooltip>
+            <default>0.07</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="RelativeMinLength" type="Double">
+            <label>Minimal length of windows</label>
+            <tooltip>
+                Minimal length of windows, as a ratio of the short side of layout area.
+                Smaller windows will be resized to this.
+            </tooltip>
+            <default>0.15</default>
+            <min>0</min>
+            <max>1</max>
+        </entry>
+        <entry name="MaxGapRatio" type="Double">
+            <label>Maximum additional gap between windows.</label>
+            <tooltip>
+                Maximum additional gap between windows, as a ratio of normal spacing (2*margin).
+            </tooltip>
+            <default>1.5</default>
+            <min>0</min>
+        </entry>
+        <entry name="MaxScale" type="Double">
+            <label>Maximum scale applied to windows.</label>
+            <tooltip>
+                Maximum scale applied to windows, *after* the minimum length is enforced.
+            </tooltip>
+            <default>2</default>
+            <min>0</min>
+        </entry>
+    </group>
+</kcfg>
